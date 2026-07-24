@@ -2,11 +2,31 @@ import { Server } from 'socket.io';
 
 let io = null;
 
-export const initSocket = (httpServer, clientUrl) => {
+export const initSocket = (httpServer, clientUrls) => {
+  const envOrigins = typeof clientUrls === 'string'
+    ? clientUrls.split(',').map((url) => url.trim()).filter(Boolean)
+    : Array.isArray(clientUrls)
+    ? clientUrls
+    : [];
+
+  const defaultOrigins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://order-management-system-42rfgu5jn-mahesh-wagh-s-projects.vercel.app',
+  ];
+
+  const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
+
   io = new Server(httpServer, {
     cors: {
-      origin: clientUrl || '*',
-      methods: ['GET', 'POST', 'PATCH'],
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+          return callback(null, true);
+        }
+        return callback(new Error(`Socket.IO CORS blocked for origin: ${origin}`));
+      },
+      methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
       credentials: true,
     },
     pingTimeout: 60000,

@@ -38,6 +38,8 @@ export function SocketProvider({ children }) {
 
   useEffect(() => {
     const socketInstance = io(SOCKET_URL, {
+      transports: ['websocket', 'polling'],
+      withCredentials: true,
       reconnection: true,
       reconnectionAttempts: 10,
       reconnectionDelay: 1000,

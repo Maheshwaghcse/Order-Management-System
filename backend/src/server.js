@@ -16,18 +16,36 @@ const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 5000;
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+const CLIENT_URL = process.env.CLIENT_URL;
+
+const envOrigins = CLIENT_URL
+  ? CLIENT_URL.split(",").map((url) => url.trim()).filter(Boolean)
+  : [];
+
+const defaultOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://order-management-system-42rfgu5jn-mahesh-wagh-s-projects.vercel.app",
+];
+
+const allowedOrigins = Array.from(new Set([...defaultOrigins, ...envOrigins]));
 
 // Connect to MongoDB
 connectDB();
 
-// Initialize Socket.IO
-initSocket(server, CLIENT_URL);
+// Initialize Socket.IO once
+initSocket(server, allowedOrigins);
 
 // Middleware
 app.use(
   cors({
-    origin: "*",
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin) || origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS policy error for origin: ${origin}`));
+    },
     credentials: true,
   }),
 );
