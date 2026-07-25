@@ -7,12 +7,10 @@ import {
   Archive,
   Clock,
   Database,
-  ArrowRight,
   CheckCircle2,
   AlertTriangle,
   RefreshCw,
   Sliders,
-  Sparkles,
 } from 'lucide-react';
 
 export default function ArchivePage() {
@@ -37,7 +35,6 @@ export default function ArchivePage() {
         type: 'success',
         text: data.message || `Archived ${data.archivedCount} orders!`,
       });
-      // Invalidate queries so orders list and analytics update
       queryClient.invalidateQueries({ queryKey: ['archive-stats'] });
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['analytics-per-day'] });
@@ -64,17 +61,17 @@ export default function ArchivePage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-300">
+    <div className="max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+          <div className="w-10 h-10 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600">
             <Archive className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Data Archival Management</h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Task 3: Automated database optimization & archiving (`POST /archive-old-orders`)
+            <h1 className="text-xl font-bold text-slate-900">Order Data Archive</h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Archive past completed orders to keep the database fast and clean.
             </p>
           </div>
         </div>
@@ -82,88 +79,88 @@ export default function ArchivePage() {
         <button
           onClick={() => refetch()}
           disabled={isFetching}
-          className="btn-secondary text-xs flex items-center gap-2"
+          className="btn-secondary text-xs flex items-center gap-1.5"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
-          <span>Refresh Stats</span>
+          <span>Refresh</span>
         </button>
       </div>
 
-      {/* Result Message */}
+      {/* Result Notification */}
       {resultMsg && (
         <div
-          className={`p-4 rounded-xl border flex items-center justify-between text-sm ${
+          className={`p-4 rounded-xl border flex items-center justify-between text-sm shadow-sm ${
             resultMsg.type === 'success'
-              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
-              : 'border-rose-500/30 bg-rose-500/10 text-rose-400'
+              ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
+              : 'border-rose-300 bg-rose-50 text-rose-800'
           }`}
         >
           <div className="flex items-center gap-2">
             {resultMsg.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 shrink-0" />
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             ) : (
-              <AlertTriangle className="w-5 h-5 shrink-0" />
+              <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
             )}
-            <span>{resultMsg.text}</span>
+            <span className="font-semibold">{resultMsg.text}</span>
           </div>
         </div>
       )}
 
-      {/* Database Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="glass-card p-6 border-slate-800 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-1">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
             <span>Active Collection</span>
-            <Database className="w-4 h-4 text-blue-400" />
+            <Database className="w-4 h-4 text-blue-600" />
           </div>
-          <h3 className="text-3xl font-extrabold text-white font-mono">
+          <h3 className="text-2xl font-bold text-slate-900">
             {isLoading ? '...' : stats.activeCount}
           </h3>
-          <p className="text-[11px] text-slate-500">Live `orders` collection documents</p>
+          <p className="text-[11px] text-slate-500">Active `orders` documents</p>
         </div>
 
-        <div className="glass-card p-6 border-amber-500/30 bg-amber-500/5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-amber-400 font-semibold">
+        <div className="bg-orange-50 p-5 rounded-xl border border-orange-200 shadow-sm space-y-1">
+          <div className="flex items-center justify-between text-xs text-orange-800 font-bold">
             <span>Eligible for Archival</span>
-            <Clock className="w-4 h-4" />
+            <Clock className="w-4 h-4 text-orange-600" />
           </div>
-          <h3 className="text-3xl font-extrabold text-amber-400 font-mono">
+          <h3 className="text-2xl font-bold text-orange-700">
             {isLoading ? '...' : stats.eligibleForArchiveCount}
           </h3>
-          <p className="text-[11px] text-amber-300/70">
+          <p className="text-[11px] text-orange-800/80">
             Orders older than {days} days
           </p>
         </div>
 
-        <div className="glass-card p-6 border-slate-800 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span>Archived Collection</span>
-            <Archive className="w-4 h-4 text-purple-400" />
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-1">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
+            <span>Archived Storage</span>
+            <Archive className="w-4 h-4 text-purple-600" />
           </div>
-          <h3 className="text-3xl font-extrabold text-white font-mono">
+          <h3 className="text-2xl font-bold text-slate-900">
             {isLoading ? '...' : stats.totalArchivedCount}
           </h3>
-          <p className="text-[11px] text-slate-500">Historical `orders_archive` documents</p>
+          <p className="text-[11px] text-slate-500">Archived `orders_archive` documents</p>
         </div>
       </div>
 
-      {/* Archival Action Control Panel */}
-      <div className="glass-card p-8 border-amber-500/20 space-y-6">
-        <div className="space-y-1">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
-            <Sliders className="w-4 h-4 text-amber-400" /> Archival Configuration & Execution
+      {/* Action Control Panel */}
+      <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
+        <div className="space-y-1 border-b border-slate-100 pb-3">
+          <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <Sliders className="w-4 h-4 text-orange-600" /> Archival Threshold & Action
           </h3>
-          <p className="text-xs text-slate-400">
-            Transfers documents matching <code className="text-amber-400 font-mono">created_at &lt; cutoff_date</code> into <code className="text-blue-400 font-mono">orders_archive</code> and removes them from active query indexes.
+          <p className="text-xs text-slate-500">
+            Select the age threshold to archive completed orders into <code className="text-orange-600 font-bold">orders_archive</code>.
           </p>
         </div>
 
-        {/* Days Threshold Selector */}
-        <div className="space-y-3 bg-slate-950/80 p-5 rounded-2xl border border-slate-800">
+        {/* Days Threshold Slider */}
+        <div className="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
           <div className="flex justify-between items-center text-xs">
-            <label className="font-semibold text-slate-200">Cutoff Threshold (Days):</label>
-            <span className="font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-lg text-sm">
-              {days} Days Threshold
+            <label className="font-bold text-slate-800">Archive Threshold:</label>
+            <span className="font-bold text-orange-700 bg-orange-100 px-3 py-1 rounded-md text-xs border border-orange-200">
+              Older than {days} Days
             </span>
           </div>
 
@@ -173,20 +170,20 @@ export default function ArchivePage() {
             max="60"
             value={days}
             onChange={(e) => setDays(Number(e.target.value))}
-            className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-600"
           />
 
-          <div className="flex justify-between text-[11px] text-slate-500 font-mono pt-1">
-            <span>1 Day (Testing mode)</span>
-            <span>30 Days (Production standard requirement)</span>
+          <div className="flex justify-between text-[11px] text-slate-500 font-medium pt-1">
+            <span>1 Day (Test)</span>
+            <span>30 Days (Standard)</span>
             <span>60 Days</span>
           </div>
         </div>
 
         {/* Cutoff Info */}
-        <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs flex justify-between items-center text-slate-300">
+        <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs flex justify-between items-center text-slate-700">
           <span>Target Cutoff Date:</span>
-          <span className="font-mono text-amber-400 font-semibold" suppressHydrationWarning>
+          <span className="font-bold text-orange-700" suppressHydrationWarning>
             {mounted && stats.cutoffDate ? new Date(stats.cutoffDate).toLocaleString() : '...'}
           </span>
         </div>
@@ -195,13 +192,13 @@ export default function ArchivePage() {
         <button
           onClick={handleRunArchive}
           disabled={mutation.isPending || stats.eligibleForArchiveCount === 0}
-          className="btn-primary bg-amber-600 hover:bg-amber-500 w-full py-3.5 text-sm flex items-center justify-center gap-2 shadow-xl shadow-amber-900/30"
+          className="btn-primary bg-orange-600 hover:bg-orange-700 w-full py-3 text-sm font-bold flex items-center justify-center gap-2 shadow-sm"
         >
           {mutation.isPending ? (
             <>Archiving Orders...</>
           ) : (
             <>
-              <Archive className="w-4 h-4" /> Archive {stats.eligibleForArchiveCount} Orders Older Than {days} Days
+              <Archive className="w-4 h-4" /> Move {stats.eligibleForArchiveCount} Orders to Archive
             </>
           )}
         </button>

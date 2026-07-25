@@ -1,6 +1,6 @@
-# 🚀 Multi-Store Order Management System & Real-Time Analytics
+# 🍲 Puneri Swad - Food Store Order Management System
 
-A production-grade, full-stack order management and analytics platform built with **Node.js, Express, MongoDB (Mongoose), Socket.IO, Zod**, and **Next.js (React / JavaScript)** with **TanStack React Query**, **Tailwind CSS**, and **Recharts**.
+A simple, fast, and real-time order management platform for food store branches (FC Road, Kothrud, Camp & Viman Nagar) featuring popular food delicacies (Puneri Misal Pav, Kanda Poha, Vada Pav, Chitale Bhakarwadi, Mango Mastani, etc.). Built with **Node.js, Express, MongoDB, Socket.IO**, and **Next.js**.
 
 ---
 

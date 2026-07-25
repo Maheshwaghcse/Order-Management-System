@@ -11,7 +11,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-  Cell,
 } from 'recharts';
 import {
   BarChart3,
@@ -24,14 +23,14 @@ import {
 } from 'lucide-react';
 
 const STORES = [
-  { id: '', name: 'All Stores' },
-  { id: 'store_downtown', name: 'store_downtown' },
-  { id: 'store_uptown', name: 'store_uptown' },
-  { id: 'store_suburbs', name: 'store_suburbs' },
-  { id: 'store_airport', name: 'store_airport' },
+  { id: '', name: 'All Pune Branches' },
+  { id: 'pune_fc_road', name: 'FC Road (Deccan)' },
+  { id: 'pune_kothrud', name: 'Kothrud (Karve Nagar)' },
+  { id: 'pune_camp', name: 'Camp (MG Road)' },
+  { id: 'pune_viman_nagar', name: 'Viman Nagar' },
 ];
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+const COLORS = ['#ea580c', '#16a34a', '#d97706', '#9333ea', '#2563eb'];
 
 export default function AnalyticsPage() {
   const [selectedStore, setSelectedStore] = useState('');
@@ -56,124 +55,133 @@ export default function AnalyticsPage() {
   const topItems = topItemsData?.data || [];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
-      {/* Page Title */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <div className="w-10 h-10 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600">
             <BarChart3 className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">MongoDB Analytics & Pipelines</h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Task 3: Aggregation pipelines for Orders/Day, Store Revenue, and Top 5 Selling Items
+            <h1 className="text-xl font-bold text-slate-900">Pune Store Sales Analytics</h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Daily sales orders, top selling Pune dishes, and revenue per branch.
             </p>
           </div>
         </div>
-
-        {/* Filter */}
-        <div className="flex items-center gap-2">
-          <Store className="w-4 h-4 text-blue-400" />
-          <select
-            value={selectedStore}
-            onChange={(e) => setSelectedStore(e.target.value)}
-            className="glass-input text-xs py-2 px-3"
-          >
-            {STORES.map((s) => (
-              <option key={s.id} value={s.id} className="bg-slate-900 text-slate-100">
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
-      {/* Grid Row 1: Orders Per Day & Top Selling Items */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Chart 1: Orders Per Day */}
-        <div className="lg:col-span-2 glass-card p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="font-bold text-white text-base flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-blue-400" /> Orders & Daily Revenue Trend
+      {/* Grid Row 1: Daily Orders Chart & Top 5 Items */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Orders per Day Chart */}
+        <div className="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-orange-600" /> Daily Orders Volume
             </h3>
-            <span className="text-xs text-slate-400 font-mono">
-              Pipeline: $group by $dateToString
-            </span>
+
+            {/* Filter */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500 font-medium">Branch:</span>
+              <select
+                value={selectedStore}
+                onChange={(e) => setSelectedStore(e.target.value)}
+                className="glass-input text-xs py-1"
+              >
+                {STORES.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {loadingDay ? (
-            <div className="h-64 flex items-center justify-center text-slate-400">
-              <RefreshCw className="w-6 h-6 animate-spin text-blue-500" />
+            <div className="h-64 flex items-center justify-center text-slate-500 text-xs">
+              <RefreshCw className="w-5 h-5 animate-spin text-orange-600 mr-2" /> Loading chart data...
             </div>
           ) : dailyOrders.length === 0 ? (
-            <div className="h-64 flex items-center justify-center text-slate-500 text-xs">
-              No daily order history available.
+            <div className="h-64 flex items-center justify-center text-slate-400 text-xs">
+              No orders data available for this branch.
             </div>
           ) : (
-            <div className="h-72 w-full pt-4">
+            <div className="h-64 w-full pt-2">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={dailyOrders} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                  <XAxis dataKey="date" stroke="#64748b" fontSize={11} tickLine={false} />
-                  <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
+                <BarChart data={dailyOrders}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis
+                    dataKey="_id"
+                    tick={{ fill: '#64748b', fontSize: 11 }}
+                    tickLine={false}
+                    axisLine={{ stroke: '#e2e8f0' }}
+                  />
+                  <YAxis
+                    tick={{ fill: '#64748b', fontSize: 11 }}
+                    tickLine={false}
+                    axisLine={{ stroke: '#e2e8f0' }}
+                  />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#0f172a',
-                      borderColor: '#334155',
-                      borderRadius: '0.75rem',
-                      color: '#f8fafc',
+                      backgroundColor: '#ffffff',
+                      borderColor: '#e2e8f0',
+                      borderRadius: '8px',
+                      color: '#0f172a',
                       fontSize: '12px',
+                      boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
                     }}
                   />
-                  <Bar dataKey="order_count" name="Orders Count" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="totalOrders" fill="#ea580c" radius={[4, 4, 0, 0]} name="Orders" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           )}
         </div>
 
-        {/* Top 5 Items Leaderboard */}
-        <div className="glass-card p-6 space-y-4 border-emerald-500/20">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 className="font-bold text-white text-base flex items-center gap-2">
-              <Award className="w-4 h-4 text-emerald-400" /> Top 5 Selling Items
+        {/* Top 5 Items List */}
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <div className="border-b border-slate-100 pb-3">
+            <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+              <Award className="w-4 h-4 text-orange-600" /> Top 5 Selling Dishes
             </h3>
           </div>
 
           {loadingItems ? (
-            <div className="py-12 text-center text-slate-400">
-              <RefreshCw className="w-6 h-6 animate-spin mx-auto text-emerald-500" />
+            <div className="py-12 text-center text-slate-500 text-xs">
+              <RefreshCw className="w-5 h-5 animate-spin mx-auto text-orange-600 mb-1" /> Loading...
             </div>
           ) : topItems.length === 0 ? (
-            <div className="py-12 text-center text-slate-500 text-xs">No item sales recorded yet.</div>
+            <div className="py-12 text-center text-slate-400 text-xs">
+              No top items recorded yet.
+            </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {topItems.map((item, idx) => (
                 <div
                   key={item.item_id}
-                  className="flex items-center justify-between p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 hover:border-emerald-500/40 transition-colors"
+                  className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5">
                     <span
-                      className="w-7 h-7 rounded-lg font-bold text-xs flex items-center justify-center text-white"
+                      className="w-6 h-6 rounded-md font-bold text-xs flex items-center justify-center text-white"
                       style={{ backgroundColor: COLORS[idx % COLORS.length] }}
                     >
                       #{idx + 1}
                     </span>
                     <div>
-                      <div className="text-xs font-semibold text-slate-200">{item.item_name}</div>
-                      <div className="text-[11px] text-slate-400 font-mono">
-                        ${item.unit_price} / unit
+                      <div className="text-xs font-bold text-slate-800">{item.item_name}</div>
+                      <div className="text-[11px] text-orange-600 font-semibold">
+                        ₹{item.unit_price} / unit
                       </div>
                     </div>
                   </div>
 
                   <div className="text-right">
-                    <div className="text-xs font-bold text-white font-mono">
+                    <div className="text-xs font-bold text-slate-900">
                       {item.total_quantity_sold} sold
                     </div>
-                    <div className="text-[11px] text-emerald-400 font-mono font-semibold">
-                      ${item.total_item_revenue.toFixed(2)}
+                    <div className="text-[11px] text-emerald-600 font-bold">
+                      ₹{item.total_item_revenue.toLocaleString('en-IN')}
                     </div>
                   </div>
                 </div>
@@ -184,42 +192,39 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Grid Row 2: Revenue per Store */}
-      <div className="glass-card p-6 space-y-6 border-blue-500/20">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h3 className="font-bold text-white text-base flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-amber-400" /> Total Revenue per Store
+      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        <div className="border-b border-slate-100 pb-3">
+          <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-orange-600" /> Revenue per Pune Branch
           </h3>
-          <span className="text-xs text-slate-400 font-mono">
-            Pipeline: $group by store_id, $sum total_amount
-          </span>
         </div>
 
         {loadingRevenue ? (
-          <div className="py-12 text-center text-slate-400">
-            <RefreshCw className="w-6 h-6 animate-spin mx-auto text-amber-500" />
+          <div className="py-12 text-center text-slate-500 text-xs">
+            <RefreshCw className="w-5 h-5 animate-spin mx-auto text-orange-600" />
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {storeRevenue.map((store, idx) => (
+            {storeRevenue.map((store) => (
               <div
                 key={store.store_id}
-                className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800/80 space-y-3"
+                className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-blue-400 font-mono uppercase">
+                  <span className="text-xs font-bold text-orange-700 uppercase">
                     {store.store_id}
                   </span>
-                  <Store className="w-4 h-4 text-slate-500" />
+                  <Store className="w-4 h-4 text-slate-400" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400">Total Revenue</p>
-                  <h4 className="text-xl font-extrabold text-white font-mono mt-0.5">
-                    ${store.total_revenue.toFixed(2)}
+                  <p className="text-xs text-slate-500">Total Sales</p>
+                  <h4 className="text-lg font-bold text-slate-900 mt-0.5">
+                    ₹{store.total_revenue.toLocaleString('en-IN')}
                   </h4>
                 </div>
-                <div className="pt-2 border-t border-slate-800/60 flex justify-between text-[11px] text-slate-400">
-                  <span>Total Orders: <strong className="text-slate-200">{store.total_orders}</strong></span>
-                  <span>Avg: <strong className="text-emerald-400">${store.avg_order_value.toFixed(2)}</strong></span>
+                <div className="pt-2 border-t border-slate-200 flex justify-between text-[11px] text-slate-600">
+                  <span>Orders: <strong className="text-slate-900">{store.total_orders}</strong></span>
+                  <span>Avg Bill: <strong className="text-emerald-700">₹{Math.round(store.avg_order_value)}</strong></span>
                 </div>
               </div>
             ))}

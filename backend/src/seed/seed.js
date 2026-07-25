@@ -6,21 +6,23 @@ import { OrderArchive } from "../models/OrderArchive.js";
 dotenv.config();
 
 const STORES = [
-  "store_downtown",
-  "store_uptown",
-  "store_suburbs",
-  "store_airport",
+  "pune_fc_road",
+  "pune_kothrud",
+  "pune_camp",
+  "pune_viman_nagar",
 ];
 
 const SAMPLE_ITEMS = [
-  { item_id: "ITEM-001", item_name: "Artisanal Espresso", price: 4.5 },
-  { item_id: "ITEM-002", item_name: "Avocado Sourdough Toast", price: 12.0 },
-  { item_id: "ITEM-003", item_name: "Cold Brew Coffee", price: 5.5 },
-  { item_id: "ITEM-004", item_name: "Matcha Latte", price: 6.0 },
-  { item_id: "ITEM-005", item_name: "Truffle Mushroom Burger", price: 18.5 },
-  { item_id: "ITEM-006", item_name: "Crispy French Fries", price: 6.5 },
-  { item_id: "ITEM-007", item_name: "Acai Superfood Bowl", price: 13.5 },
-  { item_id: "ITEM-008", item_name: "Fresh Croissant", price: 4.0 },
+  { item_id: "ITEM-001", item_name: "Special Puneri Misal Pav", price: 90 },
+  { item_id: "ITEM-002", item_name: "Hot Kanda Poha", price: 30 },
+  { item_id: "ITEM-003", item_name: "Crispy Vada Pav", price: 20 },
+  { item_id: "ITEM-004", item_name: "Chitale Special Bhakarwadi", price: 60 },
+  { item_id: "ITEM-005", item_name: "Mango Mastani", price: 120 },
+  { item_id: "ITEM-006", item_name: "Sabudana Vada", price: 50 },
+  { item_id: "ITEM-007", item_name: "Puran Poli with Ghee", price: 70 },
+  { item_id: "ITEM-008", item_name: "Ukdiche Modak", price: 80 },
+  { item_id: "ITEM-009", item_name: "Bun Maska & Irani Chai", price: 45 },
+  { item_id: "ITEM-010", item_name: "Pithla Bhakri Thali", price: 110 },
 ];
 
 const STATUSES = ["PLACED", "PREPARING", "COMPLETED"];

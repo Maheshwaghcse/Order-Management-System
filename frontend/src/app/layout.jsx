@@ -5,14 +5,14 @@ import Navbar from '../components/Navbar';
 import ToastContainer from '../components/ToastContainer';
 
 export const metadata = {
-  title: 'OmniStore - Multi-Store Order Management Platform',
-  description: 'Real-time multi-store order processing, live WebSockets, data archival, and aggregation analytics.',
+  title: 'Puneri Swad - Pune Food Store Order Management',
+  description: 'Order management platform for Pune food branches featuring iconic Pune delicacies.',
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased">
+    <html lang="en">
+      <body className="bg-white text-slate-900 min-h-screen flex flex-col antialiased">
         <QueryProvider>
           <SocketProvider>
             <Navbar />
@@ -20,8 +20,8 @@ export default function RootLayout({ children }) {
               {children}
             </main>
             <ToastContainer />
-            <footer className="border-t border-slate-800/60 py-6 text-center text-xs text-slate-500">
-              OmniStore Management Platform &bull; Node.js Express + Next.js + MongoDB + Socket.IO
+            <footer className="border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+              Puneri Swad Food Store &bull; Pune, Maharashtra 📍
             </footer>
           </SocketProvider>
         </QueryProvider>

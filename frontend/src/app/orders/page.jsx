@@ -19,11 +19,11 @@ import {
 } from 'lucide-react';
 
 const STORES = [
-  { id: '', name: 'All Stores' },
-  { id: 'store_downtown', name: 'store_downtown' },
-  { id: 'store_uptown', name: 'store_uptown' },
-  { id: 'store_suburbs', name: 'store_suburbs' },
-  { id: 'store_airport', name: 'store_airport' },
+  { id: '', name: 'All Pune Branches' },
+  { id: 'pune_fc_road', name: 'FC Road (Deccan)' },
+  { id: 'pune_kothrud', name: 'Kothrud (Karve Nagar)' },
+  { id: 'pune_camp', name: 'Camp (MG Road)' },
+  { id: 'pune_viman_nagar', name: 'Viman Nagar' },
 ];
 
 export default function OrdersListPage() {
@@ -42,11 +42,11 @@ export default function OrdersListPage() {
 
   const handleStoreChange = (storeId) => {
     setSelectedStore(storeId);
-    setActiveStore(storeId); // Also join Socket.IO store room
+    setActiveStore(storeId);
     setPage(1);
   };
 
-  const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
+  const { data, isLoading, isError, error, isFetching } = useQuery({
     queryKey: ['orders', selectedStore, selectedStatus, page, limit],
     queryFn: () =>
       getOrders({
@@ -60,7 +60,6 @@ export default function OrdersListPage() {
   const orders = data?.data || [];
   const pagination = data?.pagination || { page: 1, totalPages: 1, total: 0 };
 
-  // Local search filter for order ID or item names
   const filteredOrders = orders.filter(
     (order) =>
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -72,25 +71,25 @@ export default function OrdersListPage() {
     switch (status) {
       case 'PLACED':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-semibold">
-            <Clock className="w-3.5 h-3.5" /> PLACED
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-700 text-xs font-bold">
+            <Clock className="w-3 h-3" /> PLACED
           </span>
         );
       case 'PREPARING':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs font-semibold">
-            <ChefHat className="w-3.5 h-3.5 animate-pulse" /> PREPARING
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-amber-200 bg-amber-50 text-amber-700 text-xs font-bold">
+            <ChefHat className="w-3 h-3" /> PREPARING
           </span>
         );
       case 'COMPLETED':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-semibold">
-            <CheckCircle2 className="w-3.5 h-3.5" /> COMPLETED
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-bold">
+            <CheckCircle2 className="w-3 h-3" /> COMPLETED
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-medium">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-medium">
             {status}
           </span>
         );
@@ -98,56 +97,51 @@ export default function OrdersListPage() {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-300">
-      {/* Page Title */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+          <div className="w-10 h-10 rounded-lg bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600">
             <ListOrdered className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white tracking-tight">Orders List</h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Page 2: Paginated store orders with live WebSocket auto-refresh updates
+            <h1 className="text-xl font-bold text-slate-900">Pune Food Orders List</h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Live orders list with real-time updates when orders are placed or updated.
             </p>
           </div>
         </div>
-
-        <button
-          onClick={() => refetch()}
-          disabled={isFetching}
-          className="btn-secondary text-xs flex items-center gap-2"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
-          <span>Refresh List</span>
-        </button>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="glass-card p-5 space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {/* Store Filter */}
-          <div>
-            <label className="text-xs font-medium text-slate-400 block mb-1.5 flex items-center gap-1.5">
-              <Store className="w-3.5 h-3.5 text-blue-400" /> Filter by Store
-            </label>
-            <select
-              value={selectedStore}
-              onChange={(e) => handleStoreChange(e.target.value)}
-              className="glass-input w-full text-xs cursor-pointer"
-            >
-              {STORES.map((s) => (
-                <option key={s.id} value={s.id} className="bg-slate-900 text-slate-100">
-                  {s.name}
-                </option>
-              ))}
-            </select>
+      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        {/* Store Tabs */}
+        <div>
+          <label className="text-xs font-bold text-slate-700 block mb-2 flex items-center gap-1.5">
+            <Store className="w-3.5 h-3.5 text-orange-600" /> Select Branch Filter:
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {STORES.map((store) => (
+              <button
+                key={store.id}
+                onClick={() => handleStoreChange(store.id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  selectedStore === store.id
+                    ? 'bg-orange-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {store.name}
+              </button>
+            ))}
           </div>
+        </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
           {/* Status Filter */}
           <div>
-            <label className="text-xs font-medium text-slate-400 block mb-1.5 flex items-center gap-1.5">
-              <Filter className="w-3.5 h-3.5 text-blue-400" /> Filter by Status
+            <label className="text-xs font-semibold text-slate-600 block mb-1 flex items-center gap-1">
+              <Filter className="w-3.5 h-3.5 text-orange-600" /> Filter Status
             </label>
             <select
               value={selectedStatus}
@@ -157,29 +151,21 @@ export default function OrdersListPage() {
               }}
               className="glass-input w-full text-xs cursor-pointer"
             >
-              <option value="" className="bg-slate-900 text-slate-100">
-                All Statuses
-              </option>
-              <option value="PLACED" className="bg-slate-900 text-slate-100">
-                PLACED
-              </option>
-              <option value="PREPARING" className="bg-slate-900 text-slate-100">
-                PREPARING
-              </option>
-              <option value="COMPLETED" className="bg-slate-900 text-slate-100">
-                COMPLETED
-              </option>
+              <option value="">All Statuses</option>
+              <option value="PLACED">PLACED</option>
+              <option value="PREPARING">PREPARING</option>
+              <option value="COMPLETED">COMPLETED</option>
             </select>
           </div>
 
           {/* Search */}
           <div>
-            <label className="text-xs font-medium text-slate-400 block mb-1.5 flex items-center gap-1.5">
-              <Search className="w-3.5 h-3.5 text-blue-400" /> Search Order / Item
+            <label className="text-xs font-semibold text-slate-600 block mb-1 flex items-center gap-1">
+              <Search className="w-3.5 h-3.5 text-orange-600" /> Search Orders
             </label>
             <input
               type="text"
-              placeholder="Search ID, store, or item..."
+              placeholder="Search Order ID or dish name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="glass-input w-full text-xs"
@@ -189,70 +175,67 @@ export default function OrdersListPage() {
       </div>
 
       {/* Orders Table */}
-      <div className="glass-card overflow-hidden border-slate-800">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="py-16 text-center text-slate-400 space-y-3">
-            <RefreshCw className="w-8 h-8 animate-spin mx-auto text-blue-500" />
-            <p className="text-sm">Loading orders from MongoDB...</p>
+          <div className="py-12 text-center text-slate-500 space-y-2">
+            <RefreshCw className="w-6 h-6 animate-spin mx-auto text-orange-600" />
+            <p className="text-xs font-medium">Loading orders...</p>
           </div>
         ) : isError ? (
-          <div className="py-16 text-center text-rose-400 space-y-2">
-            <p className="text-sm font-semibold">Failed to fetch orders</p>
+          <div className="py-12 text-center text-rose-600 space-y-1">
+            <p className="text-sm font-bold">Failed to load orders</p>
             <p className="text-xs text-slate-500">{error.message}</p>
           </div>
         ) : filteredOrders.length === 0 ? (
-          <div className="py-16 text-center text-slate-400 space-y-3">
-            <ShoppingBag className="w-10 h-10 mx-auto text-slate-600" />
-            <p className="text-base font-semibold text-slate-300">No orders found</p>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              No orders match the selected store/status filters. Try creating a new order or clearing filters.
+          <div className="py-12 text-center text-slate-500 space-y-2">
+            <ShoppingBag className="w-8 h-8 mx-auto text-slate-400" />
+            <p className="text-sm font-bold text-slate-700">No orders found</p>
+            <p className="text-xs text-slate-500">
+              No orders match the selected filters.
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-950/80 text-slate-400 uppercase tracking-wider font-semibold text-[11px]">
-                  <th className="py-3.5 px-6">Order ID</th>
-                  <th className="py-3.5 px-6">Store Location</th>
-                  <th className="py-3.5 px-6">Items Summary</th>
-                  <th className="py-3.5 px-6">Total Amount</th>
-                  <th className="py-3.5 px-6">Status</th>
-                  <th className="py-3.5 px-6">Created At</th>
+                <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold uppercase tracking-wider text-[11px]">
+                  <th className="py-3 px-5">Order ID</th>
+                  <th className="py-3 px-5">Branch</th>
+                  <th className="py-3 px-5">Items</th>
+                  <th className="py-3 px-5">Total</th>
+                  <th className="py-3 px-5">Status</th>
+                  <th className="py-3 px-5">Time</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-medium">
+              <tbody className="divide-y divide-slate-100 font-medium">
                 {filteredOrders.map((order) => (
-                  <tr
-                    key={order.id}
-                    className="hover:bg-slate-800/40 transition-colors group"
-                  >
-                    <td className="py-4 px-6 text-white font-mono font-semibold">
+                  <tr key={order.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3.5 px-5 text-slate-900 font-mono font-bold">
                       {order.id}
                     </td>
-                    <td className="py-4 px-6">
-                      <span className="px-2.5 py-1 rounded-md bg-slate-800 text-slate-200 border border-slate-700 text-[11px]">
+                    <td className="py-3.5 px-5">
+                      <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-semibold">
                         {order.store_id}
                       </span>
                     </td>
-                    <td className="py-4 px-6 max-w-xs">
-                      <div className="space-y-1">
+                    <td className="py-3.5 px-5 max-w-xs">
+                      <div className="space-y-0.5">
                         {order.items.map((item, idx) => (
-                          <div key={idx} className="text-slate-300 text-xs">
-                            <span className="text-blue-400 font-semibold">{item.qty}x</span>{' '}
+                          <div key={idx} className="text-slate-800 text-xs">
+                            <span className="text-orange-600 font-bold">{item.qty}x</span>{' '}
                             {item.item_name}
-                            <span className="text-slate-500 text-[11px] font-mono ml-1">
-                              (${item.price})
+                            <span className="text-slate-500 text-[11px] ml-1">
+                              (₹{item.price})
                             </span>
                           </div>
                         ))}
                       </div>
                     </td>
-                    <td className="py-4 px-6 font-mono font-bold text-emerald-400 text-sm">
-                      ${order.total_amount.toFixed(2)}
+                    <td className="py-3.5 px-5 font-mono font-bold text-slate-900 text-sm">
+                      ₹{order.total_amount}
                     </td>
-                    <td className="py-4 px-6">{getStatusBadge(order.status)}</td>
-                    <td className="py-4 px-6 text-slate-400 text-[11px] font-mono" suppressHydrationWarning>
+                    <td className="py-3.5 px-5">{getStatusBadge(order.status)}</td>
+                    <td className="py-3.5 px-5 text-slate-500 text-[11px]" suppressHydrationWarning>
                       {mounted && order.created_at ? new Date(order.created_at).toLocaleString() : '...'}
                     </td>
                   </tr>
@@ -263,10 +246,10 @@ export default function OrdersListPage() {
         )}
 
         {/* Pagination Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/60 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-slate-400">
-            Showing Page <span className="font-bold text-white">{pagination.page}</span> of{' '}
-            <span className="font-bold text-white">{pagination.totalPages}</span> ({pagination.total} total orders)
+        <div className="p-4 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="text-xs text-slate-600">
+            Page <span className="font-bold text-slate-900">{pagination.page}</span> of{' '}
+            <span className="font-bold text-slate-900">{pagination.totalPages}</span> ({pagination.total} orders)
           </div>
 
           <div className="flex items-center gap-2">
@@ -275,9 +258,9 @@ export default function OrdersListPage() {
               disabled={page <= 1 || isFetching}
               className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1"
             >
-              <ChevronLeft className="w-4 h-4" /> Previous
+              <ChevronLeft className="w-4 h-4" /> Prev
             </button>
-            <span className="px-3 py-1 bg-slate-900 rounded-lg text-xs font-mono text-blue-400 border border-slate-800">
+            <span className="px-3 py-1 bg-white rounded-md text-xs font-semibold text-orange-600 border border-slate-200 shadow-sm">
               {page}
             </span>
             <button
