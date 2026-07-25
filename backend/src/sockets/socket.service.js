@@ -21,7 +21,12 @@ export const initSocket = (httpServer, clientUrls) => {
     cors: {
       origin: (origin, callback) => {
         if (!origin) return callback(null, true);
-        if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+        const normalizedOrigin = origin.replace(/\/$/, '');
+        const isAllowed =
+          allowedOrigins.some((allowed) => allowed.replace(/\/$/, '') === normalizedOrigin) ||
+          normalizedOrigin.endsWith('.vercel.app');
+
+        if (isAllowed) {
           return callback(null, true);
         }
         return callback(new Error(`Socket.IO CORS blocked for origin: ${origin}`));

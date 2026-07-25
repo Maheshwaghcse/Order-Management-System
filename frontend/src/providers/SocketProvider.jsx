@@ -14,7 +14,8 @@ const SocketContext = createContext({
   removeToast: () => {},
 });
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
+const rawSocketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
+const SOCKET_URL = rawSocketUrl.replace(/\/+$/, '').replace(/\/api$/, '');
 
 export function SocketProvider({ children }) {
   const [socket, setSocket] = useState(null);
