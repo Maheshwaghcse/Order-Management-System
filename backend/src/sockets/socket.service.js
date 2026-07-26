@@ -12,6 +12,7 @@ export const initSocket = (httpServer, clientUrls) => {
   const defaultOrigins = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'https://order-management-system-beryl-alpha.vercel.app',
     'https://order-management-system-42rfgu5jn-mahesh-wagh-s-projects.vercel.app',
   ];
 

@@ -4,6 +4,12 @@ A simple, fast, and real-time order management platform for food store branches 
 
 ---
 
+## 🌐 Live Deployments
+- **Frontend App (Vercel)**: [https://order-management-system-beryl-alpha.vercel.app/](https://order-management-system-beryl-alpha.vercel.app/)
+- **Backend Service (Render)**: [https://order-management-system-nfer.onrender.com/](https://order-management-system-nfer.onrender.com/)
+
+---
+
 ## 📑 Table of Contents
 - [Architecture & Tech Stack](#-architecture--tech-stack)
 - [Task 1: Multi-Store Order Management System](#-task-1-multi-store-order-management-system)
