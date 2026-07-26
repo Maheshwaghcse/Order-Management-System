@@ -50,7 +50,11 @@ export default function AnalyticsPage() {
     queryFn: () => getTopItems(5),
   });
 
-  const dailyOrders = perDayData?.data || [];
+  const dailyOrders = (perDayData?.data || []).map((item) => ({
+    date: item.date || item._id || 'Date',
+    order_count: item.order_count ?? item.totalOrders ?? 0,
+    daily_revenue: item.daily_revenue ?? 0,
+  }));
   const storeRevenue = revenueData?.data || [];
   const topItems = topItemsData?.data || [];
 
@@ -111,7 +115,7 @@ export default function AnalyticsPage() {
                 <BarChart data={dailyOrders}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                   <XAxis
-                    dataKey="_id"
+                    dataKey="date"
                     tick={{ fill: '#64748b', fontSize: 11 }}
                     tickLine={false}
                     axisLine={{ stroke: '#e2e8f0' }}
@@ -131,7 +135,7 @@ export default function AnalyticsPage() {
                       boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
                     }}
                   />
-                  <Bar dataKey="totalOrders" fill="#ea580c" radius={[4, 4, 0, 0]} name="Orders" />
+                  <Bar dataKey="order_count" fill="#ea580c" radius={[4, 4, 0, 0]} name="Orders" />
                 </BarChart>
               </ResponsiveContainer>
             </div>

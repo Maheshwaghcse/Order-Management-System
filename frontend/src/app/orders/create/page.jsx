@@ -220,26 +220,42 @@ export default function CreateOrderPage() {
               <Utensils className="w-4 h-4 text-orange-600" /> Puneri Food Menu
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {PRESET_ITEMS.map((preset) => (
-                <button
-                  key={preset.item_id}
-                  type="button"
-                  onClick={() => handleAddItem(preset)}
-                  className="flex items-center justify-between p-3 rounded-lg border border-slate-200 bg-slate-50 hover:border-orange-500 hover:bg-orange-50/50 transition-all text-left group"
-                >
-                  <div>
-                    <div className="text-xs font-bold text-slate-800 group-hover:text-orange-600 transition-colors">
-                      {preset.item_name}
+              {PRESET_ITEMS.map((preset) => {
+                const existingItem = items.find((i) => i.item_id === preset.item_id);
+                const qtyInCart = existingItem ? existingItem.qty : 0;
+
+                return (
+                  <button
+                    key={preset.item_id}
+                    type="button"
+                    onClick={() => handleAddItem(preset)}
+                    className={`flex items-center justify-between p-3 rounded-lg border text-left transition-all group ${
+                      qtyInCart > 0
+                        ? 'border-orange-500 bg-orange-50/70 shadow-sm'
+                        : 'border-slate-200 bg-slate-50 hover:border-orange-400 hover:bg-orange-50/30'
+                    }`}
+                  >
+                    <div>
+                      <div className="text-xs font-bold text-slate-800 group-hover:text-orange-600 transition-colors">
+                        {preset.item_name}
+                      </div>
+                      <div className="text-xs text-orange-600 font-bold mt-0.5">
+                        ₹{preset.price}
+                      </div>
                     </div>
-                    <div className="text-xs text-orange-600 font-bold mt-0.5">
-                      ₹{preset.price}
+                    <div className="flex items-center gap-1.5">
+                      {qtyInCart > 0 && (
+                        <span className="px-2 py-0.5 rounded-md bg-orange-600 text-white font-bold text-xs shadow-sm">
+                          x{qtyInCart}
+                        </span>
+                      )}
+                      <div className="w-7 h-7 rounded-md bg-orange-100 text-orange-700 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-all">
+                        <Plus className="w-4 h-4" />
+                      </div>
                     </div>
-                  </div>
-                  <div className="w-7 h-7 rounded-md bg-orange-100 text-orange-700 flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-all">
-                    <Plus className="w-4 h-4" />
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
